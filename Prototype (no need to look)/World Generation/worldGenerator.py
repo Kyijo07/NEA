@@ -244,7 +244,7 @@ if __name__ == "__main__":
 
     # Generate our noise map with the defined parameters
     noise_map = perlin.generate_noise_map(width, height, scale)
-    with open('example.txt', 'w') as file:
+    with open('Prototype (no need to look)/World Generation/example.txt', 'w') as file:
         file.write(str(noise_map))
     clock = pygame.time.Clock()
     running = True
