@@ -291,7 +291,7 @@ def main():
             Light(*pygame.mouse.get_pos(), 100, (255, 0, 0))
         ]
 
-        render_lightmap(screen, lights, walls, step=12)
+        render_lightmap(screen, lights, walls, step=20)
 
         # Instructions
         font = pygame.font.Font(None, 24)

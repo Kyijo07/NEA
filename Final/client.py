@@ -207,22 +207,22 @@ def main():
         # --- Lights ---
         lights = [
             Light(player.x - camera.x + player.width//2,
-                  player.y - camera.y + player.height//2, 150, (255, 200, 150))
+                  player.y - camera.y + player.height//2, 150, (255, 255, 255))
         ]
         # Other players' lights
         for pid, pos in network.other_players.items():
             if pid != network.player_id:
                 lights.append(Light(pos["x"] - camera.x + 12,
-                                    pos["y"] - camera.y + 12, 120, (100, 150, 255)))
+                                    pos["y"] - camera.y + 12, 120, (255, 255, 255)))
         # Mouse light
-        lights.append(Light(*pygame.mouse.get_pos(), 100, (255, 0, 0)))
+        lights.append(Light(*pygame.mouse.get_pos(), 100, (255, 255, 255)))
 
-        render_lightmap(screen, lights, walls, step=12)
+        render_lightmap(screen, lights, walls, step=20)
 
         # --- Draw player rectangles over lighting ---
         for pid, pos in network.other_players.items():
             if pid != network.player_id:
-                pygame.draw.rect(screen, (0,0,255),
+                pygame.draw.rect(screen, (255,255,255),
                                  (pos["x"]-camera.x, pos["y"]-camera.y, 24, 24))
         player.draw(screen, camera)
 
