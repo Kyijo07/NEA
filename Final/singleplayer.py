@@ -12,8 +12,8 @@ pygame.init()
 # ------------------ CONSTANTS ------------------ #
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-WORLD_WIDTH = 100
-WORLD_HEIGHT = 100
+WORLD_WIDTH = 1000
+WORLD_HEIGHT = 1000
 TILE_SIZE = 32
 FPS = 61
 SAVE_FILE = "savegame.json"
@@ -161,7 +161,7 @@ class Follower:
         self.y = y
         self.width = 24
         self.height = 24
-        self.speed = 2
+        self.speed = 5
         self.color = BLUE
         self.world = world
         self.path = []
@@ -233,7 +233,7 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_s:
+                if event.key == pygame.K_k:
                     save_game(player, follower, world_seed)
                 elif event.key == pygame.K_l:
                     data = load_game()
@@ -286,16 +286,15 @@ def main():
 
         # Lights (player, follower, mouse)
         lights = [
-            Light(player.x - camera.x, player.y - camera.y, 150, (255, 200, 150)),
-            Light(follower.x - camera.x, follower.y - camera.y, 120, (100, 150, 255)),
-            Light(*pygame.mouse.get_pos(), 100, (255, 0, 0))
+            Light(player.x - camera.x, player.y - camera.y, 150, (255, 50, 50)),
+            Light(follower.x - camera.x, follower.y - camera.y, 120, (50, 50, 255))
         ]
 
         render_lightmap(screen, lights, walls, step=20)
 
         # Instructions
         font = pygame.font.Font(None, 24)
-        instructions = ["Arrow Keys/WASD to move", "S: Save | L: Load | Mouse shows red light"]
+        instructions = ["Arrow Keys/WASD to move", "K: Save | L: Load"]
         for i, text in enumerate(instructions):
             rendered_text = font.render(text, True, WHITE)
             screen.blit(rendered_text, (10, 10 + i * 25))
