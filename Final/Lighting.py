@@ -38,11 +38,6 @@ def is_in_shadow(light_x, light_y, px, py, walls):
     return False
 
 
-import pygame
-import math
-from Lighting import Light, Wall, line_intersect
-
-
 def render_lightmap(screen, lights, walls, step=12):
     width, height = screen.get_size()
     # Small surface for pixelated lighting
@@ -68,7 +63,7 @@ def render_lightmap(screen, lights, walls, step=12):
                         hit = line_intersect(light.x, light.y, x, y, x1, y1, x2, y2)
                         if hit:
                             wx, wy = hit
-                            if (wx - light.x)**2 + (wy - light.y)**2 < dist_sq:
+                            if (wx - light.x) ** 2 + (wy - light.y) ** 2 < dist_sq:
                                 in_shadow = True
                                 break
                     if not in_shadow:
@@ -84,7 +79,3 @@ def render_lightmap(screen, lights, walls, step=12):
     light_surface.unlock()
     scaled = pygame.transform.scale(light_surface, (width, height))
     screen.blit(scaled, (0, 0), special_flags=pygame.BLEND_MULT)
-
-
-
-

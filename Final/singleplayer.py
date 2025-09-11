@@ -29,6 +29,7 @@ LIGHT_BLUE = (173, 216, 230)
 SANDY = (238, 203, 173)
 BLACK = (0, 0, 0)
 
+
 # ------------------ SAVE/LOAD ------------------ #
 def save_game(player, follower, seed):
     data = {
@@ -40,6 +41,7 @@ def save_game(player, follower, seed):
         json.dump(data, f)
     print("Game saved!")
 
+
 def load_game():
     if not os.path.exists(SAVE_FILE):
         print("No save file found!")
@@ -47,6 +49,7 @@ def load_game():
     with open(SAVE_FILE, "r") as f:
         data = json.load(f)
     return data
+
 
 # ------------------ WORLD ------------------ #
 class World:
@@ -97,6 +100,7 @@ class World:
     def is_passable(self, tile_type):
         return tile_type not in ['mountain']
 
+
 # ------------------ CAMERA ------------------ #
 class Camera:
     def __init__(self, width, height):
@@ -110,6 +114,7 @@ class Camera:
         self.y = target_y - self.height // 2
         self.x = max(0, min(self.x, WORLD_WIDTH * TILE_SIZE - self.width))
         self.y = max(0, min(self.y, WORLD_HEIGHT * TILE_SIZE - self.height))
+
 
 # ------------------ PLAYER ------------------ #
 class Player:
@@ -154,6 +159,7 @@ class Player:
         screen_y = self.y - camera.y
         pygame.draw.rect(screen, self.color, (screen_x, screen_y, self.width, self.height))
 
+
 # ------------------ FOLLOWER ------------------ #
 class Follower:
     def __init__(self, x, y, world):
@@ -187,7 +193,7 @@ class Follower:
         target_py = ty * TILE_SIZE + TILE_SIZE // 2
         dx = target_px - self.x
         dy = target_py - self.y
-        dist = max(1, (dx**2 + dy**2)**0.5)
+        dist = max(1, (dx ** 2 + dy ** 2) ** 0.5)
         self.x += self.speed * dx / dist
         self.y += self.speed * dy / dist
         if abs(dx) < 2 and abs(dy) < 2:
@@ -197,6 +203,7 @@ class Follower:
         screen_x = self.x - camera.x
         screen_y = self.y - camera.y
         pygame.draw.rect(screen, self.color, (screen_x, screen_y, self.width, self.height))
+
 
 # ------------------ DRAW WORLD ------------------ #
 def draw_world(screen, world, camera):
@@ -211,6 +218,7 @@ def draw_world(screen, world, camera):
             screen_x = x * TILE_SIZE - camera.x
             screen_y = y * TILE_SIZE - camera.y
             pygame.draw.rect(screen, color, (screen_x, screen_y, TILE_SIZE, TILE_SIZE))
+
 
 # ------------------ MAIN ------------------ #
 def main():

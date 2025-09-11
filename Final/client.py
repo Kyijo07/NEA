@@ -9,13 +9,14 @@ from Lighting import Light, Wall, render_lightmap
 # ---------------- CONSTANTS ---------------- #
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-WORLD_WIDTH = 100
-WORLD_HEIGHT = 100
+WORLD_WIDTH = 1000
+WORLD_HEIGHT = 1000
 TILE_SIZE = 32
 FPS = 60
 
 HOST = '127.0.0.1'
 PORT = 50000
+
 
 # ---------------- WORLD ---------------- #
 class World:
@@ -52,21 +53,22 @@ class World:
 
     def get_tile_color(self, tile_type):
         colors = {
-            'water': (173,216,230),
-            'sand': (238,203,173),
-            'grass': (0,255,0),
-            'forest': (0,150,0),
-            'dirt': (139,69,19),
-            'mountain': (128,128,128)
+            'water': (173, 216, 230),
+            'sand': (238, 203, 173),
+            'grass': (0, 255, 0),
+            'forest': (0, 150, 0),
+            'dirt': (139, 69, 19),
+            'mountain': (128, 128, 128)
         }
-        return colors.get(tile_type, (255,255,255))
+        return colors.get(tile_type, (255, 255, 255))
 
     def is_passable(self, tile_type):
         return tile_type != 'mountain'
 
+
 # ---------------- PLAYER ---------------- #
 class Player:
-    def __init__(self, x, y, color=(255,0,0)):
+    def __init__(self, x, y, color=(255, 0, 0)):
         self.x = x
         self.y = y
         self.width = 24
@@ -75,17 +77,18 @@ class Player:
         self.color = color
 
     def move(self, dx, dy, world):
-        new_x = self.x + dx*self.speed
-        new_y = self.y + dy*self.speed
+        new_x = self.x + dx * self.speed
+        new_y = self.y + dy * self.speed
         # simple boundary check
-        if 0 <= new_x <= WORLD_WIDTH*TILE_SIZE - self.width:
+        if 0 <= new_x <= WORLD_WIDTH * TILE_SIZE - self.width:
             self.x = new_x
-        if 0 <= new_y <= WORLD_HEIGHT*TILE_SIZE - self.height:
+        if 0 <= new_y <= WORLD_HEIGHT * TILE_SIZE - self.height:
             self.y = new_y
 
     def draw(self, screen, camera):
         pygame.draw.rect(screen, self.color,
                          (self.x - camera.x, self.y - camera.y, self.width, self.height))
+
 
 # ---------------- CAMERA ---------------- #
 class Camera:
@@ -96,10 +99,11 @@ class Camera:
         self.height = height
 
     def update(self, target_x, target_y):
-        self.x = target_x - self.width//2
-        self.y = target_y - self.height//2
-        self.x = max(0, min(self.x, WORLD_WIDTH*TILE_SIZE - self.width))
-        self.y = max(0, min(self.y, WORLD_HEIGHT*TILE_SIZE - self.height))
+        self.x = target_x - self.width // 2
+        self.y = target_y - self.height // 2
+        self.x = max(0, min(self.x, WORLD_WIDTH * TILE_SIZE - self.width))
+        self.y = max(0, min(self.y, WORLD_HEIGHT * TILE_SIZE - self.height))
+
 
 # ---------------- NETWORK ---------------- #
 class NetworkClient:
@@ -173,11 +177,11 @@ def main():
         if keys[pygame.K_DOWN] or keys[pygame.K_s]: dy = 1
 
         player.move(dx, dy, world)
-        camera.update(player.x + player.width//2, player.y + player.height//2)
+        camera.update(player.x + player.width // 2, player.y + player.height // 2)
         network.send_move(player.x, player.y)
 
         # --- Draw world ---
-        screen.fill((0,0,0))
+        screen.fill((0, 0, 0))
         start_x = max(0, camera.x // TILE_SIZE)
         end_x = min(world.width, (camera.x + camera.width) // TILE_SIZE + 1)
         start_y = max(0, camera.y // TILE_SIZE)
@@ -185,7 +189,7 @@ def main():
         for y in range(start_y, end_y):
             for x in range(start_x, end_x):
                 color = world.get_tile_color(world.tile_map[y][x])
-                screen.fill(color, rect=(x*TILE_SIZE - camera.x, y*TILE_SIZE - camera.y, TILE_SIZE, TILE_SIZE))
+                screen.fill(color, rect=(x * TILE_SIZE - camera.x, y * TILE_SIZE - camera.y, TILE_SIZE, TILE_SIZE))
 
         # --- Walls for lighting ---
         walls = []
@@ -206,8 +210,8 @@ def main():
 
         # --- Lights ---
         lights = [
-            Light(player.x - camera.x + player.width//2,
-                  player.y - camera.y + player.height//2, 150, (255, 255, 255))
+            Light(player.x - camera.x + player.width // 2,
+                  player.y - camera.y + player.height // 2, 150, (255, 255, 255))
         ]
         # Other players' lights
         for pid, pos in network.other_players.items():
@@ -215,15 +219,14 @@ def main():
                 lights.append(Light(pos["x"] - camera.x + 12,
                                     pos["y"] - camera.y + 12, 120, (255, 255, 255)))
         # Mouse light
-        lights.append(Light(*pygame.mouse.get_pos(), 100, (255, 255, 255)))
 
         render_lightmap(screen, lights, walls, step=20)
 
         # --- Draw player rectangles over lighting ---
         for pid, pos in network.other_players.items():
             if pid != network.player_id:
-                pygame.draw.rect(screen, (255,255,255),
-                                 (pos["x"]-camera.x, pos["y"]-camera.y, 24, 24))
+                pygame.draw.rect(screen, (255, 255, 255),
+                                 (pos["x"] - camera.x, pos["y"] - camera.y, 24, 24))
         player.draw(screen, camera)
 
         pygame.display.flip()
@@ -232,6 +235,6 @@ def main():
     pygame.quit()
     sys.exit()
 
+
 if __name__ == "__main__":
     main()
-

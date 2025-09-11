@@ -12,6 +12,7 @@ world_seed = random.randint(1, 1000000)  # generate world once
 
 start_positions = [(200, 200), (500, 500)]  # adjust for more players
 
+
 def broadcast(packet, skip_conn=None):
     for c in clients:
         if c != skip_conn:
@@ -20,10 +21,11 @@ def broadcast(packet, skip_conn=None):
             except:
                 clients.remove(c)
 
+
 def handle_client(conn, player_id):
     while True:
         try:
-            data = conn.recv(1024)
+            data = conn.recv(4096)
             if not data:
                 break
             packet = json.loads(data.decode())
@@ -36,6 +38,7 @@ def handle_client(conn, player_id):
             clients.remove(conn)
             del players[player_id]
             break
+
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((HOST, PORT))
