@@ -9,7 +9,6 @@ from Lighting import Light, Wall, render_lightmap, is_in_shadow
 
 pygame.init()
 
-# ------------------ CONSTANTS ------------------ #
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 WORLD_WIDTH = 1000
@@ -30,7 +29,6 @@ SANDY = (238, 203, 173)
 BLACK = (0, 0, 0)
 
 
-# ------------------ SAVE/LOAD ------------------ #
 def save_game(player, follower, seed):
     data = {
         "seed": seed,
@@ -51,7 +49,6 @@ def load_game():
     return data
 
 
-# ------------------ WORLD ------------------ #
 class World:
     def __init__(self, width, height, seed=None):
         self.width = width
@@ -101,7 +98,6 @@ class World:
         return tile_type not in ['mountain']
 
 
-# ------------------ CAMERA ------------------ #
 class Camera:
     def __init__(self, width, height):
         self.x = 0
@@ -116,7 +112,6 @@ class Camera:
         self.y = max(0, min(self.y, WORLD_HEIGHT * TILE_SIZE - self.height))
 
 
-# ------------------ PLAYER ------------------ #
 class Player:
     def __init__(self, x, y, world):
         self.x = x
@@ -160,7 +155,6 @@ class Player:
         pygame.draw.rect(screen, self.color, (screen_x, screen_y, self.width, self.height))
 
 
-# ------------------ FOLLOWER ------------------ #
 class Follower:
     def __init__(self, x, y, world):
         self.x = x
@@ -205,7 +199,6 @@ class Follower:
         pygame.draw.rect(screen, self.color, (screen_x, screen_y, self.width, self.height))
 
 
-# ------------------ DRAW WORLD ------------------ #
 def draw_world(screen, world, camera):
     start_x = max(0, camera.x // TILE_SIZE)
     end_x = min(world.width, (camera.x + camera.width) // TILE_SIZE + 1)
@@ -220,7 +213,6 @@ def draw_world(screen, world, camera):
             pygame.draw.rect(screen, color, (screen_x, screen_y, TILE_SIZE, TILE_SIZE))
 
 
-# ------------------ MAIN ------------------ #
 def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("World with Follower Light & Save/Load")

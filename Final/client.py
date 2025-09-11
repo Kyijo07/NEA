@@ -6,7 +6,6 @@ import threading
 from worldGenerator import PerlinNoise
 from Lighting import Light, Wall, render_lightmap
 
-# ---------------- CONSTANTS ---------------- #
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 WORLD_WIDTH = 1000
@@ -18,7 +17,6 @@ HOST = '127.0.0.1'
 PORT = 50000
 
 
-# ---------------- WORLD ---------------- #
 class World:
     def __init__(self, width, height, seed):
         self.width = width
@@ -66,7 +64,6 @@ class World:
         return tile_type != 'mountain'
 
 
-# ---------------- PLAYER ---------------- #
 class Player:
     def __init__(self, x, y, color=(255, 0, 0)):
         self.x = x
@@ -90,7 +87,6 @@ class Player:
                          (self.x - camera.x, self.y - camera.y, self.width, self.height))
 
 
-# ---------------- CAMERA ---------------- #
 class Camera:
     def __init__(self, width, height):
         self.x = 0
@@ -105,7 +101,6 @@ class Camera:
         self.y = max(0, min(self.y, WORLD_HEIGHT * TILE_SIZE - self.height))
 
 
-# ---------------- NETWORK ---------------- #
 class NetworkClient:
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -145,7 +140,6 @@ class NetworkClient:
             pass
 
 
-# ---------------- MAIN LOOP ---------------- #
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
