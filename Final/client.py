@@ -60,9 +60,6 @@ class World:
         }
         return colors.get(tile_type, (255, 255, 255))
 
-    def is_passable(self, tile_type):
-        return tile_type != 'mountain'
-
 
 class Player:
     def __init__(self, x, y, color=(255, 0, 0)):
@@ -112,20 +109,26 @@ class NetworkClient:
         threading.Thread(target=self.recv_loop, daemon=True).start()
 
     def recv_loop(self):
+        buffer = ""
         while True:
             try:
-                data = self.sock.recv(4096)
+                data = self.sock.recv(4096).decode()
                 if not data:
                     continue
-                packet = json.loads(data.decode())
-                if packet["command"] == "SETUP":
-                    self.player_id = packet["data"]["PlayerID"]
-                    self.world_seed = packet["data"]["WorldSeed"]
-                    self.x = packet["data"]["PlayerX"]
-                    self.y = packet["data"]["PlayerY"]
-                elif packet["command"] == "UPDATE_POS":
-                    for pid, pos in packet["data"].items():
-                        self.other_players[pid] = pos
+                buffer += data
+                while "\n" in buffer:
+                    line, buffer = buffer.split("\n", 1)
+                    if not line.strip():
+                        continue
+                    packet = json.loads(line)
+                    if packet["command"] == "SETUP":
+                        self.player_id = packet["data"]["PlayerID"]
+                        self.world_seed = packet["data"]["WorldSeed"]
+                        self.x = packet["data"]["PlayerX"]
+                        self.y = packet["data"]["PlayerY"]
+                    elif packet["command"] == "UPDATE_POS":
+                        for pid, pos in packet["data"].items():
+                            self.other_players[pid] = pos
             except Exception as e:
                 print("Connection lost:", e)
                 break
@@ -135,7 +138,7 @@ class NetworkClient:
             return
         packet = {"command": "MOVE", "data": {"x": x, "y": y}}
         try:
-            self.sock.send(json.dumps(packet).encode())
+            self.sock.send((json.dumps(packet) + "\n").encode())
         except:
             pass
 
@@ -162,7 +165,6 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-        # --- Player movement ---
         keys = pygame.key.get_pressed()
         dx = dy = 0
         if keys[pygame.K_LEFT] or keys[pygame.K_a]: dx = -1
@@ -174,7 +176,6 @@ def main():
         camera.update(player.x + player.width // 2, player.y + player.height // 2)
         network.send_move(player.x, player.y)
 
-        # --- Draw world ---
         screen.fill((0, 0, 0))
         start_x = max(0, camera.x // TILE_SIZE)
         end_x = min(world.width, (camera.x + camera.width) // TILE_SIZE + 1)
@@ -185,7 +186,6 @@ def main():
                 color = world.get_tile_color(world.tile_map[y][x])
                 screen.fill(color, rect=(x * TILE_SIZE - camera.x, y * TILE_SIZE - camera.y, TILE_SIZE, TILE_SIZE))
 
-        # --- Walls for lighting ---
         walls = []
         margin = 2
         for y in range(start_y - margin, end_y + margin):
@@ -202,21 +202,17 @@ def main():
                             Wall(wx, wy + TILE_SIZE, wx, wy)
                         ])
 
-        # --- Lights ---
         lights = [
             Light(player.x - camera.x + player.width // 2,
                   player.y - camera.y + player.height // 2, 150, (255, 255, 255))
         ]
-        # Other players' lights
         for pid, pos in network.other_players.items():
             if pid != network.player_id:
                 lights.append(Light(pos["x"] - camera.x + 12,
                                     pos["y"] - camera.y + 12, 120, (255, 255, 255)))
-        # Mouse light
 
-        render_lightmap(screen, lights, walls, step=20)
+        render_lightmap(screen, lights, walls, step=25)
 
-        # --- Draw player rectangles over lighting ---
         for pid, pos in network.other_players.items():
             if pid != network.player_id:
                 pygame.draw.rect(screen, (255, 255, 255),
