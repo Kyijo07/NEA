@@ -5,7 +5,7 @@ import json
 import os
 from worldGenerator import PerlinNoise
 from Pathfinding import Pathfinder
-from Lighting import Light, Wall, render_lightmap, is_in_shadow
+from Lighting import Light, Wall, render_lightmap
 
 pygame.init()
 
