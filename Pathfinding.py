@@ -14,11 +14,6 @@ class Node:
 
 class Pathfinder:
     def __init__(self, grid):
-        """
-        Initialize with a 2D grid where:
-        0 = walkable
-        1 = obstacle/wall
-        """
         self.height = len(grid)
         self.width = len(grid[0]) if grid else 0
         self.nodes = []
