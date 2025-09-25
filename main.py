@@ -14,7 +14,7 @@ SCREEN_HEIGHT = 600
 WORLD_WIDTH = 1000
 WORLD_HEIGHT = 1000
 TILE_SIZE = 32
-FPS = 61
+FPS = 60
 SAVE_FILE = "savegame.json"
 
 WHITE = (255, 255, 255)
@@ -286,7 +286,6 @@ def main():
 
         # Lights (player, follower, mouse)
         lights = [
-            Light(player.x - camera.x, player.y - camera.y, 150, (255, 50, 50)),
             Light(follower.x - camera.x, follower.y - camera.y, 120, (50, 50, 255))
         ]
 

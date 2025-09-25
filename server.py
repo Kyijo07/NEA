@@ -14,7 +14,6 @@ start_positions = [(200, 200), (500, 500)]  # adjust for more players
 
 
 def send_packet(conn, packet):
-    """Send a JSON packet with newline delimiter."""
     try:
         conn.send((json.dumps(packet) + "\n").encode())
     except:
@@ -23,7 +22,6 @@ def send_packet(conn, packet):
 
 
 def broadcast(packet, skip_conn=None):
-    """Send packet to all connected clients except skip_conn."""
     for c in list(clients):
         if c != skip_conn:
             send_packet(c, packet)
@@ -57,30 +55,35 @@ def handle_client(conn, player_id):
         del players[player_id]
 
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((HOST, PORT))
-s.listen()
-print(f"Server listening on {HOST}:{PORT}, World Seed: {world_seed}")
+def main():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((HOST, PORT))
+    s.listen()
+    print(f"Server listening on {HOST}:{PORT}, World Seed: {world_seed}")
 
-player_count = 0
-while True:
-    conn, addr = s.accept()
-    player_count += 1
-    player_id = player_count
-    clients.append(conn)
-    px, py = start_positions[(player_id - 1) % len(start_positions)]
-    players[player_id] = {"x": px, "y": py}
+    player_count = 0
+    while True:
+        conn, addr = s.accept()
+        player_count += 1
+        player_id = player_count
+        clients.append(conn)
+        px, py = start_positions[(player_id - 1) % len(start_positions)]
+        players[player_id] = {"x": px, "y": py}
 
-    # Send setup info
-    setup_packet = {
-        "command": "SETUP",
-        "data": {
-            "PlayerID": player_id,
-            "PlayerX": px,
-            "PlayerY": py,
-            "WorldSeed": world_seed
+        # Send setup info
+        setup_packet = {
+            "command": "SETUP",
+            "data": {
+                "PlayerID": player_id,
+                "PlayerX": px,
+                "PlayerY": py,
+                "WorldSeed": world_seed
+            }
         }
-    }
-    send_packet(conn, setup_packet)
+        send_packet(conn, setup_packet)
 
-    threading.Thread(target=handle_client, args=(conn, player_id), daemon=True).start()
+        threading.Thread(target=handle_client, args=(conn, player_id), daemon=True).start()
+
+
+if __name__ == "__main__":
+    main()
