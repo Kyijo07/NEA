@@ -7,6 +7,21 @@ FPS = 60
 
 
 def main():
+    components = {"Wire": "W", "Light Bulb OFF": "B", "Light Bulb ON": "L", "NOT Gate": "N", "AND GATE": "A",
+                  "OR GATE": "O", "Switch Off": "S", "Switch On": ""}
+
+    sample_grid = [
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""]
+    ]
+
     pygame.init()
     pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Circuits")
