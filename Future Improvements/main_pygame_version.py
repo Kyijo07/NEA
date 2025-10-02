@@ -7,8 +7,8 @@ FPS = 60
 
 
 def main():
-    components = {"Wire": "W", "Light Bulb OFF": "B", "Light Bulb ON": "L", "NOT Gate": "N", "AND GATE": "A",
-                  "OR GATE": "O", "Switch Off": "S", "Switch On": ""}
+    components = {"Wire": "-", "Light Bulb OFF": "^", "Light Bulb ON": "*", "NOT Gate": "N", "AND GATE": "A",
+                  "OR GATE": "O", "Switch Off": "_", "Switch On": "/"}
 
     sample_grid = [
         ["", "", "", "", "", "", "", "", ""],
