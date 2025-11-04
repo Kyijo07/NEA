@@ -218,7 +218,6 @@ def main():
     pygame.display.set_caption("World with Follower Light & Save/Load")
     clock = pygame.time.Clock()
 
-    # Generate new world by default
     world_seed = random.randint(1, 1000000)
     world = World(WORLD_WIDTH, WORLD_HEIGHT, world_seed)
 
